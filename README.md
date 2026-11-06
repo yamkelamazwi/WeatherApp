@@ -46,6 +46,10 @@ https://github.com/yamkelamazwi/WeatherApp
 - GitHub Pages
 
 ---
+## 📸 Screenshot
+<p align="center">
+  <img src="./screenshotWeather.png" alt="Weather App Screenshot" width="800">
+</p>
 
 ## 📚 What I Learned
 
