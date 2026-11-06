@@ -1,6 +1,8 @@
 let form = document.querySelector("form");
 let cityInput = document.querySelector("#city-input");
 let results = document.querySelector("#results");
+let locationBtn = document.querySelector("#location-btn");
+let clearBtn = document.querySelector("#clear-btn");
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -62,9 +64,16 @@ if (weatherCode === 3) {
 let forecastHTML = "";
 
 for (let i = 0; i < weatherData.daily.time.length; i++) {
+
+  let date = new Date(weatherData.daily.time[i]);
+
+  let day = date.toLocaleDateString("en-US", {
+    weekday: "long"
+  });
+
   forecastHTML += `
-    <div>
-      <p>${weatherData.daily.time[i]}</p>
+    <div class="forecast-card">
+      <p>${day}</p>
       <p>🔺 High: ${weatherData.daily.temperature_2m_max[i]}°C</p>
       <p>🔻 Low: ${weatherData.daily.temperature_2m_min[i]}°C</p>
     </div>
@@ -86,4 +95,27 @@ results.innerHTML = `
   ${forecastHTML}
 `;
 
+});
+
+locationBtn.addEventListener("click", () => {
+  navigator.geolocation.getCurrentPosition(getWeatherByLocation);
+});
+
+async function getWeatherByLocation(position) {
+  let latitude = position.coords.latitude;
+  let longitude = position.coords.longitude;
+
+  let weatherUrl =
+    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min`;
+
+  let weatherResponse = await fetch(weatherUrl);
+
+  let weatherData = await weatherResponse.json();
+
+  console.log(weatherData);
+}
+
+clearBtn.addEventListener("click", () => {
+  cityInput.value = "";
+  results.innerHTML = "";
 });
