@@ -88,7 +88,9 @@ for (let i = 0; i < weatherData.daily.time.length; i++) {
   let date = new Date(weatherData.daily.time[i]);
 
   let day = date.toLocaleDateString("en-US", {
-    weekday: "long"
+    weekday: "long",
+    month: "long",
+    day: "numeric"
   });
 
   forecastHTML += `
