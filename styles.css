@@ -1,121 +1,143 @@
-let form = document.querySelector("form");
-let cityInput = document.querySelector("#city-input");
-let results = document.querySelector("#results");
-let locationBtn = document.querySelector("#location-btn");
-let clearBtn = document.querySelector("#clear-btn");
-
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  let city = cityInput.value;
-  let url = `https://geocoding-api.open-meteo.com/v1/search?name=${city}`;
-
-  let response = await fetch(url);
-  let data = await response.json();
-
-  let latitude = data.results[0].latitude;
-  let longitude = data.results[0].longitude;
-
-  let cityName = data.results[0].name;
-
-let country = data.results[0].country;
-
-
-
-let weatherUrl =
-  `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min`;
-  
-  
-
-let weatherResponse = await fetch(weatherUrl);
-
-let weatherData = await weatherResponse.json();
-
-
-let temperature = weatherData.current.temperature_2m;
-
-let windSpeed = weatherData.current.wind_speed_10m;
-
-let weatherCode = weatherData.current.weather_code;
-
-let updateTime = weatherData.current.time;
-let humidity = weatherData.current.relative_humidity_2m;
-
-
-let weatherCondition = "";
-
-if (weatherCode === 0) {
-  weatherCondition = "☀️ Clear Sky";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-if (weatherCode === 1) {
-  weatherCondition = "🌤️ Mainly Clear";
+body {
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  padding: 20px;
+
+  background: linear-gradient(
+    180deg,
+    #4facfe,
+    #00f2fe
+  );
+
+  color: white;
 }
 
-if (weatherCode === 2) {
-  weatherCondition = "⛅ Partly Cloudy";
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 2rem;
 }
 
-if (weatherCode === 3) {
-  weatherCondition = "☁️ Overcast";
+body p:first-of-type {
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-
-let forecastHTML = "";
-
-for (let i = 0; i < weatherData.daily.time.length; i++) {
-
-  let date = new Date(weatherData.daily.time[i]);
-
-  let day = date.toLocaleDateString("en-US", {
-    weekday: "long"
-  });
-
-  forecastHTML += `
-    <div class="forecast-card">
-      <p>${day}</p>
-      <p>🔺 High: ${weatherData.daily.temperature_2m_max[i]}°C</p>
-      <p>🔻 Low: ${weatherData.daily.temperature_2m_min[i]}°C</p>
-    </div>
-  `;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-results.innerHTML = `
-  <h2>${cityName}, ${country}</h2>
-  <p>${weatherCondition}</p>
-  <p>🌡️ Temperature: ${temperature}°C</p>
-  <p>💨 Wind Speed: ${windSpeed} km/h</p>
-  <p>💧 Humidity: ${humidity}%</p>
-  <p>🕒 Updated: ${updateTime}</p>
-
-  <hr>
-
-  <h3>7-Day Forecast</h3>
-
-  ${forecastHTML}
-`;
-
-});
-
-locationBtn.addEventListener("click", () => {
-  navigator.geolocation.getCurrentPosition(getWeatherByLocation);
-});
-
-async function getWeatherByLocation(position) {
-  let latitude = position.coords.latitude;
-  let longitude = position.coords.longitude;
-
-  let weatherUrl =
-    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,wind_speed_10m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min`;
-
-  let weatherResponse = await fetch(weatherUrl);
-
-  let weatherData = await weatherResponse.json();
-
-  console.log(weatherData);
+input {
+  padding: 15px;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
 }
 
-clearBtn.addEventListener("click", () => {
-  cityInput.value = "";
-  results.innerHTML = "";
-});
+button {
+  padding: 15px;
+
+  border: none;
+
+  border-radius: 15px;
+
+  background: white;
+  color: #2196f3;
+
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+#location-btn {
+  margin-top: 10px;
+  width: 100%;
+}
+
+#results {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 20px;
+
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+#results h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#results p {
+  margin: 10px 0;
+}
+
+#results h3 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.forecast-card {
+  background: rgba(255,255,255,0.2);
+
+  padding: 15px;
+
+  border-radius: 15px;
+
+  margin-bottom: 10px;
+}
+
+@media (min-width: 768px) {
+  body {
+    max-width: 800px;
+    margin: auto;
+  }
+
+  form {
+    flex-direction: row;
+  }
+
+  input {
+    flex: 1;
+  }
+}
+
+.creator {
+  text-align: center;
+  margin-bottom: 30px;
+
+  font-size: 1rem;
+  font-weight: 500;
+
+  color: white;
+}
+
+.creator span {
+  color: #ffd700;
+  font-weight: 700;
+}
+
+#clear-btn {
+  background: #ff4d4d;
+  color: white;
+}
+
+#clear-btn:hover {
+  background: #e60000;
+}
+
