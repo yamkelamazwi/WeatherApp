@@ -41,6 +41,26 @@ let weatherCode = weatherData.current.weather_code;
 let updateTime = weatherData.current.time;
 let humidity = weatherData.current.relative_humidity_2m;
 
+if (weatherCode === 0) {
+  document.body.style.background =
+    "linear-gradient(180deg, #FFD54F, #FF9800)";
+}
+
+if (weatherCode === 1) {
+  document.body.style.background =
+    "linear-gradient(180deg, #64B5F6, #2196F3)";
+}
+
+if (weatherCode === 2) {
+  document.body.style.background =
+    "linear-gradient(180deg, #81D4FA, #4FC3F7)";
+}
+
+if (weatherCode === 3) {
+  document.body.style.background =
+    "linear-gradient(180deg, #90A4AE, #607D8B)";
+}
+
 
 let weatherCondition = "";
 
